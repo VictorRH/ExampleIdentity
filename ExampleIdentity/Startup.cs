@@ -1,14 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ExampleIdentity
 {
@@ -25,6 +19,25 @@ namespace ExampleIdentity
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options => options.AddPolicy("corsApp", builder =>
+            {
+                builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+            }));
+
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+
+                    Title = "Entity Example CRUD",
+                    Version = "v1"
+
+                });
+                c.CustomSchemaIds(c => c.FullName);
+            });
+
+
             services.AddControllers();
         }
 
@@ -37,13 +50,18 @@ namespace ExampleIdentity
             }
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            app.UseSwagger();
+            app.UseSwaggerUI(c=> {
+                c.SwaggerEndpoint("v1/swagger.json", "Example CRUD Identity");
+            });
+
         }
     }
 }
