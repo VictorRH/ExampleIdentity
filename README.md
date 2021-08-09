@@ -7,4 +7,4 @@
 3. Install Nugget Microsoft.EntityFrameworkCore.Tools.
 4. Install Nugget Microsoft.VisualStudio.Azure.Containers.Tools.Targets
 
-**Optional : Install Nugget Swagger Swashbuckle.AspNetCore **
+**Optional : Install Nugget Swagger Swashbuckle.AspNetCore**
