@@ -1,0 +1,26 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ExampleIdentity-deploy
+  labels:
+	name: ExampleIdentity-deploy
+	app: ExampleIdentity
+spec:
+  replicas: 1
+  selector:
+	matchLabels:
+	  app: ExampleIdentity
+	  type: ExampleIdentity
+  template:
+	metadata:
+	  name: ExampleIdentity-pod
+	  labels:
+	    app: ExampleIdentity
+	    type: ExampleIdentity
+	spec:
+	  containers:
+		- image: chilaquilchk/exampleidentity:latest
+		  imagePullPolicy: IfNotPresent
+		  name: ExampleIdentity-app
+		  ports: 
+		  - containerPort: 80

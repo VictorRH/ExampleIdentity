@@ -1,0 +1,13 @@
+﻿apiVersion: v1
+kind: Pod
+metadata: 
+  name: ExampleIdentity-pod
+  labels:
+    app: ExampleIdentity
+    type: ExampleIdentity
+spec:
+  containers:
+    - name: ExampleIdentity-app
+      image: chilaquilchk/exampleidentity:latest
+      ports:
+        - containerPort: 80

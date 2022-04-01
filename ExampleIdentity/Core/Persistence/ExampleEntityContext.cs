@@ -12,7 +12,6 @@ namespace ExampleIdentity.Core.Persistence
         {
             base.OnModelCreating(builder);
         }
-
-        public DbSet<StudentModel> Student { get; set; }
+        public DbSet<StudentModel> Student =>Set<StudentModel>();
     }
 }

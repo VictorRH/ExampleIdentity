@@ -1,0 +1,16 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: ExampleIdentity-service
+  labels:
+    name: ExampleIdentity
+    app: ExampleIdentity
+spec:
+  type: LoadBalancer
+  ports:
+   - ports: 80
+     targetPort: 80
+  selector:
+    app: ExampleIdentity-app
+    type: ExampleIdentity
+     

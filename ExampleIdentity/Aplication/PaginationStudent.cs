@@ -2,35 +2,26 @@
 using ExampleIdentity.Core.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace ExampleIdentity.Äplication
+namespace ExampleIdentity.Aplication
 {
     public class PaginationStudent
     {
         public class ExecutePagination : IRequest<List<StudenModelDto>>
         {
-            public string StudentStorage { get; set; }
-
+            public string StudentStorage { get; set; } = string.Empty;
             public int PageSize { get; set; }
-
             public int PageNumber { get; set; }
         }
 
         public class HandlerPagination : IRequestHandler<ExecutePagination, List<StudenModelDto>>
         {
             private readonly ExampleEntityContext context;
-
             public HandlerPagination(ExampleEntityContext context)
             {
                 this.context = context;
             }
-
-
             public async Task<List<StudenModelDto>> Handle(ExecutePagination request, CancellationToken cancellationToken)
             {
                 request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
@@ -41,9 +32,7 @@ namespace ExampleIdentity.Äplication
                 if (totalStudents.Count <= 0)
                 {
                     throw new HandlerException(HttpStatusCode.BadRequest, new { message = "Error: student database is empty" });
-
                 }
-
                 var result = (student) ? await context.Student.Select(x => new StudenModelDto
                 {
                     Id = x.IdStudent,
@@ -56,7 +45,7 @@ namespace ExampleIdentity.Äplication
                     Subjects = x.Subjects
                 }).OrderByDescending(x => x.Datecreated).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync(cancellationToken) :
 
-                await context.Student.Where(x => x.Firstname.Contains(request.StudentStorage)).Select(x => new StudenModelDto
+                await context.Student.Where(x => x.Firstname!.Contains(request.StudentStorage)).Select(x => new StudenModelDto
                 {
                     Id = x.IdStudent,
                     Age = x.Age,
@@ -72,7 +61,6 @@ namespace ExampleIdentity.Äplication
                 if (result.Count <= 0)
                 {
                     throw new HandlerException(HttpStatusCode.BadRequest, new { message = "Error: student not found" });
-
                 }
                 var studentPagination = new List<StudenModelDto> {
                     new StudenModelDto
@@ -83,7 +71,6 @@ namespace ExampleIdentity.Äplication
                         TotalRecords = totalStudents.Count
                     }
                };
-
                 return studentPagination;
             }
         }

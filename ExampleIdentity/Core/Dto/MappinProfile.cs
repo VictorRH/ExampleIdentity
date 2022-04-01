@@ -9,7 +9,5 @@ namespace ExampleIdentity.Core.Dto
         {
             CreateMap<StudentModel, StudenModelDto>();
         }
-
-
     }
 }

@@ -1,12 +1,9 @@
 ﻿using ExampleIdentity.Core.Persistence;
 using FluentValidation;
 using MediatR;
-using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace ExampleIdentity.Äplication
+namespace ExampleIdentity.Aplication
 {
     public class DeleteStudentId
     {
@@ -22,24 +19,17 @@ namespace ExampleIdentity.Äplication
                 RuleFor(x => x.Id).NotEmpty().NotNull();
             }
         }
-
         public class HandlerDelete : IRequestHandler<ExecuteDeleteStudent>
         {
             private readonly ExampleEntityContext context;
-
             public HandlerDelete(ExampleEntityContext context)
             {
                 this.context = context;
             }
-
             public async Task<Unit> Handle(ExecuteDeleteStudent request, CancellationToken cancellationToken)
             {
-                var result = context.Student.Where(x => x.IdStudent == request.Id).FirstOrDefault();
-                if (result == null)
-                {
+                var result = context.Student.Where(x => x.IdStudent == request.Id).FirstOrDefault() ??
                     throw new HandlerException(HttpStatusCode.BadRequest, new { message = "Error: student not found" });
-
-                }
 
                 context.Student.Remove(result);
                 var resultDelete = await context.SaveChangesAsync(cancellationToken);
@@ -47,9 +37,7 @@ namespace ExampleIdentity.Äplication
                 {
                     return Unit.Value;
                 }
-
                 throw new HandlerException(HttpStatusCode.BadRequest, new { message = "Error: student not delete" });
-
             }
         }
     }

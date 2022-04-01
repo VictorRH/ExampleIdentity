@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ExampleIdentity.Controllers
 {
@@ -8,7 +7,7 @@ namespace ExampleIdentity.Controllers
     [ApiController]
     public class MyControllerBase : ControllerBase
     {
-        private IMediator _mediator;
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        private IMediator? _mediator;
+        protected IMediator? Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
     }
 }

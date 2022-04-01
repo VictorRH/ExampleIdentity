@@ -2,23 +2,20 @@
 using ExampleIdentity.Core.Persistence;
 using FluentValidation;
 using MediatR;
-using System;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace ExampleIdentity.Äplication
+namespace ExampleIdentity.Aplication
 {
     public class NewStudent
     {
         public class ExecuteNewStudent : IRequest
         {
-            public string Firstname { get; set; }
-            public string Lastname { get; set; }
-            public string Subjects { get; set; }
+            public string Firstname { get; set; } = string.Empty;
+            public string Lastname { get; set; } = string.Empty;
+            public string Subjects { get; set; } = string.Empty;
             public int Age { get; set; }
-            public string Phone { get; set; }
-            public string Marks { get; set; }
+            public string Phone { get; set; } = string.Empty;
+            public string Marks { get; set; } = string.Empty;
         }
 
         public class ValidationAddStudent : AbstractValidator<ExecuteNewStudent>
@@ -36,12 +33,10 @@ namespace ExampleIdentity.Äplication
         public class HandlerAdd : IRequestHandler<ExecuteNewStudent>
         {
             private readonly ExampleEntityContext context;
-
             public HandlerAdd(ExampleEntityContext context)
             {
                 this.context = context;
             }
-
             public async Task<Unit> Handle(ExecuteNewStudent request, CancellationToken cancellationToken)
             {
                 var addStudent = new StudentModel
@@ -54,14 +49,12 @@ namespace ExampleIdentity.Äplication
                     Phone = request.Phone,
                     Subjects = request.Subjects
                 };
-
                 await context.Student.AddAsync(addStudent, cancellationToken);
                 var resultAdd = await context.SaveChangesAsync(cancellationToken);
                 if (resultAdd > 0)
                 {
                     return Unit.Value;
                 }
-
                 throw new HandlerException(HttpStatusCode.BadRequest, new { message = "Error: Failed insert new student" });
             }
         }

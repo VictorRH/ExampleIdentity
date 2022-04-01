@@ -1,44 +1,33 @@
-﻿using ExampleIdentity.Äplication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using ExampleIdentity.Aplication;
 using Newtonsoft.Json;
-using System;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace ExampleIdentity.Middleware
 {
     public class HandlerErrorMiddleware
     {
         private readonly RequestDelegate _next;
-
         private readonly ILogger<HandlerErrorMiddleware> _logger;
-
         public HandlerErrorMiddleware(RequestDelegate next, ILogger<HandlerErrorMiddleware> logger)
         {
             _next = next;
             _logger = logger;
         }
-
         public async Task Invoke(HttpContext context)
         {
-
             try
             {
                 await _next(context);
             }
             catch (Exception ex)
             {
-
                 await HandlerExceptionAsync(context, ex, _logger);
             }
-
         }
 
         private async static Task HandlerExceptionAsync(HttpContext context, Exception ex, ILogger<HandlerErrorMiddleware> logger)
         {
-            object error = null;
-
+            object? error = null;
             switch (ex)
             {
                 case HandlerException me:
@@ -61,8 +50,6 @@ namespace ExampleIdentity.Middleware
                 var result = JsonConvert.SerializeObject(new { error });
                 await context.Response.WriteAsync(result);
             }
-
-
         }
     }
 }
