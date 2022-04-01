@@ -1,3 +1,4 @@
+
 using ExampleIdentity.Aplication;
 using ExampleIdentity.Core.Persistence;
 using ExampleIdentity.Middleware;
@@ -9,14 +10,18 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddCors(options => options.AddPolicy("corsApp", builder =>
+//builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-}));
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+}).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NewStudent>());
 
+builder.Services.AddCors(o => o.AddPolicy("corsAPP", builder =>
+{
+    builder.WithOrigins("*").
+            AllowAnyMethod().
+            AllowAnyHeader();
+}));
 builder.Services.AddMediatR(typeof(NewStudent.ExecuteNewStudent).Assembly);
 builder.Services.AddAutoMapper(typeof(NewStudent.ExecuteNewStudent));
 builder.Services.AddDbContext<ExampleEntityContext>(options =>
@@ -29,28 +34,26 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Entity Example CRUD",
         Version = "v1"
+
     });
-    c.CustomSchemaIds(c => c.FullName);
 });
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-}).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NewStudent>());
+        
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("v1/swagger.json", "Example CRUD Identity");
+});
 app.UseMiddleware<HandlerErrorMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("v1/swagger.json", "Example CRUD Identity");
-    });
-}
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("corsApp");
 app.UseAuthorization();
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.Run();

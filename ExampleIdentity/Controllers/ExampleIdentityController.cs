@@ -33,5 +33,10 @@ namespace ExampleIdentity.Controllers
         {
             return await Mediator!.Send(data);
         }
+        [HttpGet("allStudents")]
+        public async Task<ActionResult<List<StudenModelDto>>>GetAll()
+        {
+            return await Mediator!.Send(new GetAllStudents.ExecuteAllStudent());
+        }
     }
 }
